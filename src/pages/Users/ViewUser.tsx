@@ -8,7 +8,6 @@ import PageMeta from '../../components/common/PageMeta';
 import Badge from '../../components/ui/badge/Badge';
 import { useCustomers } from '../../hooks/useCustomers';
 import { useTheme } from '../../context/ThemeContext';
-import Badges from '../UiElements/Badges';
 
 export default function ViewUser() {
   const { theme } = useTheme();
@@ -100,7 +99,7 @@ export default function ViewUser() {
 
   return (
     <>
-      <PageMeta title="MKSK Admin Dashboard | View Users" />
+      <PageMeta title="MKSK Admin Dashboard | View Users" description='View Users' />
       <PageBreadcrumb pageTitle="View Users" />
 
       <div className="space-y-6">

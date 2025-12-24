@@ -41,7 +41,7 @@ export default function ViewCompany() {
 
   return (
     <>
-      <PageMeta title="MKSK Admin Dashboard | View Company" />
+      <PageMeta title="MKSK Admin Dashboard | View Company"  description='View Company'/>
       <PageBreadcrumb pageTitle="View Company" />
 
       <div className="space-y-6">

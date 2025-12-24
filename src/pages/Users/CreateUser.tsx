@@ -187,7 +187,7 @@ export default function CreateUser() {
 
     return (
         <>
-            <PageMeta title="MKSK | Create User" />
+            <PageMeta title="MKSK | Create User" description='Create User' />
             <PageBreadcrumb pageTitle="Create User" />
 
             <ComponentCard title="Create New User Profile">

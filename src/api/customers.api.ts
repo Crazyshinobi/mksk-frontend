@@ -30,11 +30,13 @@ export interface CreateCustomerPayload {
   visitingCardDoc?: string;
 }
 
+// Update the payload type to accept FormData or the Interface
 export const createCustomerApi = async (
-  payload: CreateCustomerPayload
+  payload: FormData | CreateCustomerPayload
 ): Promise<ApiResponse<any>> => {
   try {
-    console.log("🚀 [API Request] Creating Customer:", payload);
+    // Note: When logging FormData, use console.log(Object.fromEntries(payload)) to see content
+    console.log("🚀 [API Request] Creating Customer via FormData");
 
     const { data } = await api.post("/customers", payload, {
       headers: {
@@ -45,18 +47,14 @@ export const createCustomerApi = async (
     console.log("✅ [API Success] Customer Created:", data);
     return data;
   } catch (error: any) {
-    // Detailed error logging
     console.error("❌ [API Error] Create Customer Failed:", {
       message: error?.response?.data?.message || error.message,
       status: error?.response?.status,
       details: error?.response?.data,
     });
-
-    // We throw the error so that useMutation's onError handler is triggered
     throw error;
   }
 };
-
 // 🔹 LIST CUSTOMERS
 export const fetchCustomersApi = async (): Promise<ApiResponse<any[]>> => {
   const { data } = await api.get("/customers");

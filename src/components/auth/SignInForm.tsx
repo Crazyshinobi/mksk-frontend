@@ -110,7 +110,7 @@ export default function SignInForm() {
                     placeholder="Enter your password"
                     value={formData.password}
                     onChange={handleChange}
-                    required
+                    // required
                   />
                   <span
                     onClick={() =>
