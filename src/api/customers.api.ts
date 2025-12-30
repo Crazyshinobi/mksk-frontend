@@ -61,3 +61,23 @@ export const fetchCustomersApi = async (): Promise<ApiResponse<any[]>> => {
   console.log(data);
   return data;
 };
+
+// 🔹 TOGGLE CUSTOMER STATUS
+export const toggleCustomerStatusApi = async (
+  id: number
+): Promise<ApiResponse<any>> => {
+  try {
+    const { data } = await api.patch(`/customers/${id}/status`);
+    return data;
+  } catch (error: any) {
+    console.error("❌ [API Error] Toggle Status Failed:", error.message);
+    throw error;
+  }
+};
+
+export const deleteCustomerApi = async (
+  id: number
+): Promise<ApiResponse<any>> => {
+  const { data } = await api.delete(`/customers/${id}`);
+  return data;
+};

@@ -1,0 +1,22 @@
+@media print {
+  /* Hide everything else on the page */
+  body * {
+    visibility: hidden;
+  }
+  /* Show only the slip container */
+  .slip-container,
+  .slip-container * {
+    visibility: visible;
+  }
+  .slip-container {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    border: none !important; /* Remove outer shadow/border for printing */
+  }
+  @page {
+    size: auto;
+    margin: 0mm;
+  }
+}

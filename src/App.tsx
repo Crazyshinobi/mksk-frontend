@@ -27,6 +27,11 @@ import CreateCompany from './pages/Company/CreateCompany';
 import ViewCompany from './pages/Company/ViewCompany';
 import CreateUser from './pages/Users/CreateUser';
 import ViewUser from './pages/Users/ViewUser';
+import CreateTransactions from './pages/Transactions/CreateTransactions';
+import ViewTransactions from './pages/Transactions/ViewTransactions';
+import EditTransaction from './pages/Transactions/EditTransactions';
+import ViewSlip from './pages/Transactions/ViewSlip';
+import Cashbook from './pages/Transactions/CashBook';
 
 export default function App() {
   return (
@@ -48,10 +53,21 @@ export default function App() {
           {/* Company */}
           <Route path="create-company" element={<CreateCompany />} />
           <Route path="view-company" element={<ViewCompany />} />
-          
+
           {/* Users */}
           <Route path="create-user" element={<CreateUser />} />
           <Route path="view-user" element={<ViewUser />} />
+
+          {/* Transactions  */}
+          <Route path="create-transactions" element={<CreateTransactions />} />
+          <Route path="view-transactions" element={<ViewTransactions />} />
+          <Route path='edit-transaction/:id' element={<EditTransaction />} />
+
+          {/* Slips  */}
+          <Route path="/view-slips/:id" element={<ViewSlip />} />
+
+          {/* Cashbook  */}
+          <Route path="/view-cashbook" element={<Cashbook />} />
 
           {/* Others */}
           <Route path="profile" element={<UserProfiles />} />
