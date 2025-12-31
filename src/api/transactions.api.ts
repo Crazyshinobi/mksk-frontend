@@ -102,16 +102,21 @@ export interface CashbookEntry {
   balance: number;
 }
 
-export interface CashbookResponse {
-  data: CashbookEntry[];
+// This matches your actual API response structure
+export interface CashbookApiResponse {
+  success: boolean;
+  message: string;
+  data: {
+    data: CashbookEntry[];
+  };
 }
 
 // API Functions
 export const fetchCashbookApi = async (
   params?: CashbookParams
-): Promise<CashbookResponse> => {
+): Promise<CashbookApiResponse> => {
   console.group("📊 Cashbook API Call");
-  console.log("Params:", params);
+  console.log("1. Input Params:", params);
 
   // Clean params - remove undefined/null/empty values
   const cleanedParams: Record<string, string> = {};
@@ -126,17 +131,32 @@ export const fetchCashbookApi = async (
     cleanedParams.endDate = params.endDate;
   }
 
-  console.log("Cleaned Params:", cleanedParams);
+  console.log("2. Cleaned Params:", cleanedParams);
 
   try {
-    const response = await api.get<CashbookResponse>("/transactions/cashbook", {
-      params: cleanedParams,
+    const response = await api.get<CashbookApiResponse>(
+      "/transactions/cashbook",
+      {
+        params: cleanedParams,
+      }
+    );
+
+    console.log("3. ✅ Response Status:", response.status);
+    console.log("4. ✅ Response Structure:", {
+      success: response.data.success,
+      hasData: !!response.data.data,
+      hasNestedData: !!response.data.data?.data,
+      dataCount: response.data.data?.data?.length || 0,
     });
-    console.log("✅ Response:", response.data);
     console.groupEnd();
+
     return response.data;
   } catch (error: any) {
-    console.error("❌ Error:", error.response?.data || error.message);
+    console.error("❌ API Error:", {
+      status: error.response?.status,
+      message: error.response?.data?.message,
+      fullError: error.response?.data,
+    });
     console.groupEnd();
     throw error;
   }

@@ -8,6 +8,7 @@ import ComponentCard from '../../components/common/ComponentCard';
 import PageMeta from '../../components/common/PageMeta';
 import { useCashbook } from '../../hooks/useTransactions';
 import { useCompanies } from '../../hooks/useCompanies';
+import type { CashbookEntry } from '../../api/transactions.api';
 
 const { RangePicker } = DatePicker;
 const { Text } = Typography;
@@ -15,11 +16,11 @@ const { Text } = Typography;
 export default function Cashbook() {
     const navigate = useNavigate();
 
-    // 1. State for filters
+    // State for filters
     const [companyId, setCompanyId] = useState<number | undefined>(undefined);
     const [dateRange, setDateRange] = useState<[Dayjs, Dayjs] | null>(null);
 
-    // 2. Prepare params - Memoized to prevent unnecessary re-renders
+    // Prepare params - Memoized to prevent unnecessary re-renders
     const params = useMemo(() => {
         const p: any = {};
         if (companyId) p.companyId = companyId;
@@ -28,21 +29,28 @@ export default function Cashbook() {
         return p;
     }, [companyId, dateRange]);
 
-    // 3. Data Fetching
+    // Data Fetching
     const { data: cashbookResponse, isLoading, isError, refetch } = useCashbook(params);
     const { data: companiesResponse } = useCompanies();
 
-    // 4. Extract actual data arrays from nested response structure
-    const cashbookData = Array.isArray(cashbookResponse) ? cashbookResponse : cashbookResponse?.data || [];
-    const companiesData = companiesResponse?.data || [];
+    // Extract data arrays with proper type safety
+    const cashbookData: CashbookEntry[] = useMemo(() => {
+        if (!cashbookResponse?.data?.data) return [];
+        return Array.isArray(cashbookResponse.data.data) ? cashbookResponse.data.data : [];
+    }, [cashbookResponse]);
 
-    // 5. Handlers
+    const companiesData = useMemo(() => {
+        if (!companiesResponse?.data) return [];
+        return Array.isArray(companiesResponse.data) ? companiesResponse.data : [];
+    }, [companiesResponse]);
+
+    // Handlers
     const handleReset = () => {
         setCompanyId(undefined);
         setDateRange(null);
     };
 
-    // 6. Table Columns definition
+    // Table Columns
     const columns = [
         {
             title: 'Date',
@@ -71,7 +79,13 @@ export default function Cashbook() {
             width: 150,
             align: 'right' as const,
             className: 'text-green-600 font-bold',
-            render: (val: any) => val !== '-' ? `₹${Number(val).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : '-',
+            render: (val: number | '-') => {
+                if (val === '-') return '-';
+                return `₹${Number(val).toLocaleString('en-IN', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                })}`;
+            },
         },
         {
             title: 'Deduction (-)',
@@ -80,7 +94,13 @@ export default function Cashbook() {
             width: 150,
             align: 'right' as const,
             className: 'text-red-600 font-bold',
-            render: (val: any) => val !== '-' ? `₹${Number(val).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : '-',
+            render: (val: number | '-') => {
+                if (val === '-') return '-';
+                return `₹${Number(val).toLocaleString('en-IN', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                })}`;
+            },
         },
         {
             title: 'Running Balance',
@@ -91,7 +111,10 @@ export default function Cashbook() {
             className: 'bg-gray-50 font-black',
             render: (val: number) => (
                 <span className={val >= 0 ? 'text-green-700' : 'text-red-700'}>
-                    ₹{Number(val).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                    ₹{Number(val).toLocaleString('en-IN', {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2
+                    })}
                 </span>
             ),
         },
@@ -129,7 +152,7 @@ export default function Cashbook() {
             </div>
 
             <ComponentCard title="Company Passbook">
-                {/* 7. Filters Section */}
+                {/* Filters Section */}
                 <div className="mb-6 p-5 bg-white border border-gray-100 rounded-xl shadow-sm no-print">
                     <Row gutter={[16, 16]} align="bottom">
                         <Col xs={24} sm={12} lg={8}>
@@ -143,7 +166,7 @@ export default function Cashbook() {
                                 className="w-full"
                                 value={companyId}
                                 onChange={(value) => setCompanyId(value)}
-                                options={companiesData.map((c: any) => ({
+                                options={companiesData.map((c) => ({
                                     value: c.id,
                                     label: c.companyName,
                                 }))}
@@ -188,7 +211,7 @@ export default function Cashbook() {
                     </Row>
                 </div>
 
-                {/* 8. Ledger Table */}
+                {/* Ledger Table */}
                 <Table
                     dataSource={cashbookData}
                     columns={columns}
@@ -199,7 +222,7 @@ export default function Cashbook() {
                         pageSize: 15,
                         showTotal: (total) => `Total ${total} entries`,
                         showSizeChanger: true,
-                        pageSizeOptions: ['10', '15', '25', '50']
+                        pageSizeOptions: ['10', '15', '25', '50', '100']
                     }}
                     bordered
                     locale={{
@@ -225,14 +248,23 @@ export default function Cashbook() {
                                         PAGE TOTALS
                                     </Table.Summary.Cell>
                                     <Table.Summary.Cell index={1} className="text-right text-green-600">
-                                        ₹{totalRec.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                        ₹{totalRec.toLocaleString('en-IN', {
+                                            minimumFractionDigits: 2,
+                                            maximumFractionDigits: 2
+                                        })}
                                     </Table.Summary.Cell>
                                     <Table.Summary.Cell index={2} className="text-right text-red-600">
-                                        ₹{totalDed.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                        ₹{totalDed.toLocaleString('en-IN', {
+                                            minimumFractionDigits: 2,
+                                            maximumFractionDigits: 2
+                                        })}
                                     </Table.Summary.Cell>
                                     <Table.Summary.Cell index={3} className="text-right">
                                         <Text className={lastBal >= 0 ? 'text-green-700' : 'text-red-700'}>
-                                            ₹{lastBal.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                            ₹{lastBal.toLocaleString('en-IN', {
+                                                minimumFractionDigits: 2,
+                                                maximumFractionDigits: 2
+                                            })}
                                         </Text>
                                     </Table.Summary.Cell>
                                 </Table.Summary.Row>
