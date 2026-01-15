@@ -32,6 +32,7 @@ import ViewTransactions from './pages/Transactions/ViewTransactions';
 import EditTransaction from './pages/Transactions/EditTransactions';
 import ViewSlip from './pages/Transactions/ViewSlip';
 import Cashbook from './pages/Transactions/CashBook';
+import RecordPayment from './pages/Transactions/RecordPayment';
 
 export default function App() {
   return (
@@ -65,6 +66,9 @@ export default function App() {
 
           {/* Slips  */}
           <Route path="/view-slips/:id" element={<ViewSlip />} />
+
+          {/* Payment Allocation  */}
+          <Route path="/record-payment/:id" element={<RecordPayment />} />
 
           {/* Cashbook  */}
           <Route path="/view-cashbook" element={<Cashbook />} />

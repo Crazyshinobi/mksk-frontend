@@ -1,7 +1,7 @@
 import { useRef } from 'react';
 import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import { useReactToPrint } from 'react-to-print';
-import { PrinterOutlined, ArrowLeftOutlined } from '@ant-design/icons';
+import { PrinterOutlined, ArrowLeftOutlined, DollarOutlined } from '@ant-design/icons';
 
 import PageBreadcrumb from '../../components/common/PageBreadCrumb';
 import PageMeta from '../../components/common/PageMeta';
@@ -46,9 +46,19 @@ export default function ViewSlip() {
         <Button variant="outline" onClick={() => navigate(-1)}>
           <ArrowLeftOutlined /> Back
         </Button>
-        <Button onClick={() => handlePrint()}>
-          <PrinterOutlined /> Print Slip
-        </Button>
+        <div className="flex gap-3">
+          {/* 🔹 New Record Payment Button */}
+          <Button
+            className="bg-green-600 hover:bg-green-700 text-white"
+            onClick={() => navigate(`/record-payment/${id}?type=${slipType}`)}
+          >
+            <DollarOutlined /> Record Payment
+          </Button>
+
+          <Button onClick={() => handlePrint()}>
+            <PrinterOutlined /> Print Slip
+          </Button>
+        </div>
       </div>
 
       <ComponentCard title="Slip Preview">
