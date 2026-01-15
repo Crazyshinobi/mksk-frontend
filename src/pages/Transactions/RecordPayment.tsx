@@ -1,7 +1,7 @@
-import React, { useState, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { useParams, useSearchParams, useNavigate } from 'react-router-dom';
-import { Input, Select, Button, Typography, Space, Row, Col, Table, Divider, Upload, Spin } from 'antd';
-import { SaveOutlined, ArrowLeftOutlined, UploadOutlined } from '@ant-design/icons';
+import { Input, Select, Button, Typography, Space, Row, Col, Table, Spin } from 'antd';
+import { SaveOutlined, ArrowLeftOutlined } from '@ant-design/icons';
 import { usePaymentAllocation } from '../../hooks/usePaymentAllocation';
 import { useTransactionSlip } from '../../hooks/useTransactions';
 import PageBreadcrumb from '../../components/common/PageBreadCrumb';
@@ -15,7 +15,7 @@ export default function RecordPayment() {
     const navigate = useNavigate();
     const slipType = (searchParams.get('type') as 'lender' | 'borrower') || 'lender';
 
-    const { data: slipResponse, isLoading, isError } = useTransactionSlip(Number(id), slipType);
+    const { data: slipResponse, isLoading } = useTransactionSlip(Number(id), slipType);
     const { mutateAllocation, isAllocating } = usePaymentAllocation();
 
     const [formData, setFormData] = useState({
